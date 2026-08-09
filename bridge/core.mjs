@@ -54,6 +54,10 @@ export function mergeFileChanges(statusEntries = [], stats = []) {
   return files.sort((a, b) => a.path.localeCompare(b.path));
 }
 
+export function gitNullDevice(platform = process.platform) {
+  return platform === "win32" ? "NUL" : "/dev/null";
+}
+
 export function buildRiskSignals(files = [], activity = [], turnStatus = "idle", lastActivityAt = null) {
   const signals = [];
   const deleted = files.filter((file) => file.state.includes("D"));

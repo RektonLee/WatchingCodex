@@ -3,7 +3,7 @@ import { spawn, execFile } from "node:child_process";
 import { readFile, stat } from "node:fs/promises";
 import { promisify } from "node:util";
 import path from "node:path";
-import { buildRiskSignals, compact, describeItem, mergeFileChanges, normalizePlan, parseNumstat, parsePorcelainStatus } from "./core.mjs";
+import { buildRiskSignals, compact, describeItem, gitNullDevice, mergeFileChanges, normalizePlan, parseNumstat, parsePorcelainStatus } from "./core.mjs";
 
 const execFileAsync = promisify(execFile);
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8", ".json": "application/json; charset=utf-8", ".png": "image/png", ".svg": "image/svg+xml", ".ico": "image/x-icon", ".map": "application/json; charset=utf-8" };
@@ -143,7 +143,7 @@ export function createWatchingCodexServer({ workspace, distDir, port = 7331, ver
         if (!metadata.isFile() || metadata.size > 512 * 1024) continue;
         const content = await readFile(absolute);
         if (content.includes(0)) continue;
-        const diff = await runGit(["diff", "--no-index", "--no-ext-diff", "--unified=3", "--", "/dev/null", entry.path], 2 * 1024 * 1024);
+        const diff = await runGit(["diff", "--no-index", "--no-ext-diff", "--unified=3", "--", gitNullDevice(), entry.path], 2 * 1024 * 1024);
         if (diff) chunks.push(diff.replaceAll("a/dev/null", "a/dev/null"));
       } catch { /* unreadable untracked files stay in the file list */ }
     }

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { buildRiskSignals, compact, mergeFileChanges, normalizePlan, parseNumstat, parsePorcelainStatus } from "../bridge/core.mjs";
+import { buildRiskSignals, compact, gitNullDevice, mergeFileChanges, normalizePlan, parseNumstat, parsePorcelainStatus } from "../bridge/core.mjs";
 
 test("compact keeps short values and bounds long output", () => {
   assert.equal(compact("hello", 10), "hello");
@@ -37,4 +37,10 @@ test("flags destructive and unusually broad diffs", () => {
   const files = Array.from({ length: 21 }, (_, index) => ({ path: index === 0 ? "old.ts" : `src/${index}.ts`, state: index === 0 ? "D" : "M", added: 0, removed: index === 0 ? 300 : 0 }));
   const ids = buildRiskSignals(files, [], "idle").map((signal) => signal.id);
   assert.deepEqual(ids, ["wide-scope", "deletions", "large-removal"]);
+});
+
+test("uses the native null device for untracked file diffs", () => {
+  assert.equal(gitNullDevice("win32"), "NUL");
+  assert.equal(gitNullDevice("linux"), "/dev/null");
+  assert.equal(gitNullDevice("darwin"), "/dev/null");
 });

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { spawn } from "node:child_process";
-import { access, readFile } from "node:fs/promises";
+import { access, readFile, stat } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import process from "node:process";
@@ -46,8 +46,12 @@ if (!Number.isInteger(port) || port < 1024 || port > 65535) { console.error("Por
 
 const workspace = path.resolve(workspaceArg || process.cwd());
 const distDir = path.join(packageRoot, "dist");
-try { await access(workspace); await access(path.join(distDir, "index.html")); }
-catch { console.error("WatchingCodex is not built yet, or the workspace does not exist. Run `npm run build` first."); process.exit(1); }
+try {
+  const workspaceStat = await stat(workspace);
+  if (!workspaceStat.isDirectory()) throw new Error("not a directory");
+} catch { console.error(`Workspace does not exist or is not a directory: ${workspace}`); process.exit(1); }
+try { await access(path.join(distDir, "index.html")); }
+catch { console.error("WatchingCodex is not built yet. Run `npm run build` first."); process.exit(1); }
 
 const app = createWatchingCodexServer({ workspace, distDir, port, version: packageJson.version });
 try { await app.start(); }
@@ -59,8 +63,10 @@ console.log(`  Workspace  ${workspace}`);
 console.log(`  Dashboard  ${url}\n`);
 
 if (shouldOpen) {
-  const command = process.platform === "win32" ? "cmd" : process.platform === "darwin" ? "open" : "xdg-open";
+  const isWsl = Boolean(process.env.WSL_DISTRO_NAME || process.env.WSL_INTEROP);
+  const command = isWsl ? "cmd.exe" : process.platform === "win32" ? "cmd" : process.platform === "darwin" ? "open" : "xdg-open";
   const openArgs = process.platform === "win32" ? ["/c", "start", "", url] : [url];
+  if (isWsl) openArgs.splice(0, openArgs.length, "/c", "start", "", url);
   const child = spawn(command, openArgs, { detached: true, stdio: "ignore" }); child.on("error", () => {}); child.unref();
 }
 
