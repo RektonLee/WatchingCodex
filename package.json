@@ -1,0 +1,63 @@
+{
+  "name": "watching-codex",
+  "version": "0.1.0",
+  "description": "A local-first control room for OpenAI Codex — live activity, diffs, approvals, steering, and interrupts.",
+  "type": "module",
+  "license": "MIT",
+  "author": "RektonLee",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RektonLee/WatchingCodex.git"
+  },
+  "homepage": "https://github.com/RektonLee/WatchingCodex#readme",
+  "bugs": "https://github.com/RektonLee/WatchingCodex/issues",
+  "keywords": [
+    "codex",
+    "openai",
+    "coding-agent",
+    "agent-observability",
+    "developer-tools",
+    "local-first"
+  ],
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "bin": {
+    "watching-codex": "bin/watching-codex.mjs",
+    "codex-watch": "bin/watching-codex.mjs"
+  },
+  "files": [
+    "bin",
+    "bridge",
+    "dist",
+    "LICENSE",
+    "README.md",
+    "SECURITY.md"
+  ],
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "tsc -b && vite build",
+    "start": "node bin/watching-codex.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "lint": "eslint src bridge bin scripts tests",
+    "check": "npm run lint && npm run test && npm run build",
+    "prepack": "npm run check"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "@types/node": "^22.19.19",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.2",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.26",
+    "globals": "^16.4.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.59.3",
+    "vite": "^8.0.0"
+  }
+}
