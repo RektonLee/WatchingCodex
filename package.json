@@ -38,7 +38,7 @@
     "dev": "node scripts/dev.mjs",
     "build": "tsc -b && vite build",
     "start": "node bin/watching-codex.mjs",
-    "test": "node --test tests/*.test.mjs",
+    "test": "node --test",
     "lint": "eslint src bridge bin scripts tests",
     "check": "npm run lint && npm run test && npm run build",
     "prepack": "npm run check"
